@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>HTMLページ作成ツール</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .input-area {
+      margin-bottom: 20px;
+    }
+    select, input, button {
+      margin-right: 10px;
+      padding: 5px;
+    }
+    #previewList {
+      list-style: none;
+      padding-left: 0;
+    }
+    #previewList li {
+      margin-bottom: 5px;
+    }
+    #htmlOutput {
+      width: 100%;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>HTMLページ作成ツール</h1>
+
+  <div class="input-area">
+    <select id="format">
+      <option value="heading">見出し</option>
+      <option value="uppercase">大文字</option>
+      <option value="paragraph">本文</option>
+    </select>
+    <input type="text" id="textInput" placeholder="文章を入力">
+    <button onclick="addContent()">追加</button>
+  </div>
+
+  <ul id="previewList"></ul>
+
+  <button onclick="generateHTML()">HTML生成</button>
+
+  <div id="outputArea">
+    <h2>生成されたHTML</h2>
+    <textarea id="htmlOutput" rows="10" cols="80" readonly></textarea>
+  </div>
+
+  <script>
+    const contentList = [];
+
+    function addContent() {
+      const format = document.getElementById("format").value;
+      const text = document.getElementById("textInput").value.trim();
+      if (!text) return;
+
+      contentList.push({ format, text });
+      updatePreview();
+      document.getElementById("textInput").value = "";
+    }
+
+    function updatePreview() {
+      const preview = document.getElementById("previewList");
+      preview.innerHTML = "";
+      contentList.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `[${item.format}] ${item.text}`;
+        preview.appendChild(li);
+      });
+    }
+
+    function generateHTML() {
+      let html = "<!DOCTYPE html>\n<html>\n<body>\n";
+      contentList.forEach(item => {
+        switch (item.format) {
+          case "heading":
+            html += `<h2>${item.text}</h2>\n`;
+            break;
+          case "uppercase":
+            html += `<p style="text-transform:uppercase;">${item.text}</p>\n`;
+            break;
+          case "paragraph":
+            html += `<p>${item.text}</p>\n`;
+            break;
+        }
+      });
+      html += "</body>\n</html>";
+      document.getElementById("htmlOutput").value = html;
+    }
+  </script>
+</body>
+</html>
+
